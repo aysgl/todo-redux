@@ -1,14 +1,15 @@
-import { combineReducers, createStore } from "redux";
-import todoReducer from "./reducers/todoReducer";
-import alertReducer from "./reducers/alertReducer";
-import switchReducer from "./reducers/switchReducer";
+// store.js
+import { configureStore } from '@reduxjs/toolkit';
+import todoReducer from './todoSlice';
+import switchSlice from './switchSlice';
+import alertSlice from './alertSlice';
 
-const rootReducer = combineReducers({
-    todoReducer,
-    alertReducer,
-    switchReducer
+const store = configureStore({
+    reducer: {
+        todos: todoReducer,
+        switch: switchSlice,
+        alert: alertSlice
+    },
 });
-
-const store = createStore(rootReducer);
 
 export default store;

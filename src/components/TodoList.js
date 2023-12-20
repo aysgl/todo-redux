@@ -1,11 +1,11 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Alert from './Alert';
-import { clearTodo, removeTodo, searchTodo, todoAction, updateTodo } from '../redux/action/todoAction';
-import { alertAction } from '../redux/action/alertAction';
+import { clearTodo, removeTodo, searchTodo, updateTodo } from '../redux/todoSlice';
+import { setAlert } from '../redux/alertSlice';
 
 const TodoList = () => {
-    const state = useSelector((store) => store.todoReducer);
+    const state = useSelector((store) => store.todos);
     const dispatch = useDispatch();
 
     const handleSearch = (e) => {
@@ -13,27 +13,22 @@ const TodoList = () => {
     };
 
     const handleRemove = (todoId) => {
-        dispatch({
-            type: alertAction.SET_ALERT,
-            payload: {
-                type: 'danger',
-                message: 'Todo deleted successfully!',
-            },
-        });
+        console.log("handleRemove called with todoId:", todoId);
+
+        dispatch(setAlert({
+            type: 'danger',
+            message: 'Todo deleted successfully!',
+        }));
 
         dispatch(removeTodo(todoId));
-
     };
 
-    const handleClear = (list) => {
-        dispatch({
-            type: alertAction.SET_ALERT,
-            payload: {
-                type: 'danger',
-                message: 'All todo deleted successfully!',
-            },
-        });
-        dispatch(clearTodo(list));
+    const handleClear = () => {
+        dispatch(setAlert({
+            type: 'danger',
+            message: 'All todos deleted successfully!',
+        }));
+        dispatch(clearTodo());
     };
 
     const handleUpdate = (todoId) => {
@@ -48,38 +43,40 @@ const TodoList = () => {
         <>
             <Alert type={state.type} message={state.message} />
             <div className={`card ${state.todos.length === 0 ? 'd-none' : ''}`}>
-                <h5 className="card-title">
-                    Todo List
-                    <a href="#" onClick={handleClear}>Clear List</a>
-                </h5>
-                <form className="list-search">
-                    <input
-                        type="text"
-                        placeholder="Search todo"
-                        onChange={handleSearch}
-                    />
-                </form>
+                <div className='card-body p-4'>
+                    <h5 className="card-title d-flex justify-content-between">
+                        Todo List
+                        <a href="#." className='btn btn-link text-warning p-0' onClick={handleClear}>Clear List</a>
+                    </h5>
+                    <form className="list-search">
+                        <input
+                            type="text"
+                            placeholder="Search todo"
+                            className='form-control'
+                            onChange={handleSearch}
+                        />
+                    </form>
 
-                <ul className="list-group">
-                    {filteredTodos.map((todo) => (
-                        <li className="list-group-item" key={todo.id}>
-                            <span
-                                onClick={() => handleUpdate(todo.id)}
-                                style={{
-                                    textDecoration: todo.is_done ? 'line-through' : 'none',
-                                }}
-                            >
-                                {todo.text}
-                            </span>
-                            <div className="remove" onClick={() => handleRemove(todo.id)}>
-                                <i className="fa fa-remove"></i>
-                            </div>
-                        </li>
-                    ))}
-                </ul>
+                    <ul className="list-group">
+                        {filteredTodos.map((todo) => (
+                            <li className="list-group-item d-flex justify-content-between px-0 border-0" key={todo.id}>
+                                <span
+                                    onClick={() => handleUpdate(todo.id)}
+                                    style={{
+                                        textDecoration: todo.is_done ? 'line-through' : 'none',
+                                    }}
+                                >
+                                    {todo.text}
+                                </span>
+                                <div className="remove" onClick={() => handleRemove(todo.id)}>
+                                    <i className="bi bi-x h4"></i>
+                                </div>
+                            </li>
+                        ))}
+                    </ul>
+                </div>
             </div>
         </>
-
     );
 };
 

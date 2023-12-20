@@ -1,15 +1,14 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { clearAlert } from '../redux/alertSlice';
 
 const Alert = () => {
-    const state = useSelector((store) => store.alertReducer);
+    const state = useSelector((store) => store.alert);
     const dispatch = useDispatch();
 
     setInterval(() => {
-        dispatch({
-            type: "CLEAR_ALERT"
-        })
-    }, 4000);
+        dispatch(clearAlert())
+    }, 6000);
 
     return (
         state?.message ? (
